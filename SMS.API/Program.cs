@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using SMS.Infrastructure.Data;
+using SMS.Infrastructure.Repository.ChildRepository.StudentRepository;
+using SMS.Infrastructure.UnitOfWork;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +13,12 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<Context>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("conn")));
+
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+//child Repository
+builder.Services.AddScoped<IStudentRepository , StudentRepository>();
+
 
 var app = builder.Build();
 
