@@ -1,20 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SMS.Entity.Domain
+namespace SMS.ClientEntity.Request.Course
 {
-    public class Gender : BaseEntity
+    public class CourseRequest
     {
+
         public int Id { get; set; }
+        public string CourseCode { get; set; }
 
-        [Required]
-        public string Name { get; set; }
+        public string CourseName { get; set; }
 
-        public List<Student> Students { get; set; }
     }
 }

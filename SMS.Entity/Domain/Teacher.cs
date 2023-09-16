@@ -25,5 +25,7 @@ namespace SMS.Entity.Domain
 
         [Required,MinLength(11), MaxLength(11)]
         public string PhoneNumber { get; set; }
+
+        public List<TeacherCourse> TeacherCourses { get; set; }
     }
 }

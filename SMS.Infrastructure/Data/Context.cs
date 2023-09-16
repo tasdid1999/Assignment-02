@@ -17,7 +17,27 @@ namespace SMS.Infrastructure.Data
 
        public DbSet<Gender> genders { get; set; }
 
-       public DbSet<Teacher> teachers { get; set; }    
+       public DbSet<Teacher> teachers { get; set; }
        
+       public DbSet<Course> courses { get; set; }   
+
+       public DbSet<TeacherCourse> teacherCourses { get; set; }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<TeacherCourse>()
+                .HasKey(tc => new { tc.TeacherId, tc.CourseId });
+
+            modelBuilder.Entity<TeacherCourse>()
+                .HasOne(tc => tc.Teacher)
+                .WithMany(t => t.TeacherCourses)
+                .HasForeignKey(tc => tc.TeacherId);
+
+            modelBuilder.Entity<TeacherCourse>()
+                .HasOne(tc => tc.Course)
+                .WithMany(c => c.TeacherCourses)
+                .HasForeignKey(tc => tc.CourseId);
+
+        }
+
     }
 }
