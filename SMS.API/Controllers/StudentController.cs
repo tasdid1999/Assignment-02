@@ -70,7 +70,8 @@ namespace SMS.API.Controllers
                
                 var isInserted = await _studentService.AddStudentAsync(student);
 
-                return isInserted ? Ok(new Response(true, "Insert Item Succesful", "200", "OK", studentRequest)) : BadRequest(new Response(false, "something wrong in requested object", "400", "BadRequest", studentRequest));
+                return isInserted ? Ok(new Response(true, "Insert Item Succesful", "200", "OK", studentRequest))
+                                  : BadRequest(new Response(false, "something wrong in requested object", "400", "BadRequest", studentRequest));
             }
             catch(Exception ex)
             {
@@ -86,7 +87,8 @@ namespace SMS.API.Controllers
 
                 var isUpdate = await _studentService.UpdateStudentAsync(student);
 
-                return isUpdate ? Ok(new Response(true, "Update item Succesful", "200", "OK", studentRequest)) : BadRequest(new Response(false, "item NotFound", "200", "OK", studentRequest));
+                return isUpdate ? Ok(new Response(true, "Update item Succesful", "200", "OK", studentRequest))
+                                : BadRequest(new Response(false, "item NotFound", "200", "OK", studentRequest));
             }
             catch(Exception ex)
             {
@@ -96,29 +98,51 @@ namespace SMS.API.Controllers
         [HttpDelete("student/{id:int}")]
         public async Task<IActionResult> DeleteAsync([FromRoute]int id)
         {
-            var isDelete = await _studentService.DeleteStudentAsync(id);
+            try
+            {
+                var isDelete = await _studentService.DeleteStudentAsync(id);
 
-            return isDelete ? Ok(new Response(true, "delete item Succesful", "200", "OK", id)) : NotFound(new Response(false, "item NotFound", "404", "Not Found", id));
+                return isDelete ? Ok(new Response(true, "delete item Succesful", "200", "OK", id))
+                                : NotFound(new Response(false, "item NotFound", "404", "Not Found", id));
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost("students/active/{id:int}")]
 
         public async Task<IActionResult> MakeActive([FromRoute]int id)
         {
-           var isSucces =  await _studentService.ActiveAsync(id);
+            try
+            {
+                var isSucces = await _studentService.ActiveAsync(id);
 
-           return isSucces ? Ok(new Response(true, "activate succesful", "200", "OK", id))
-                           : BadRequest(new Response(false, "item NotFound or user already active", "404", "Not Found", id));
+                return isSucces ? Ok(new Response(true, "activate succesful", "200", "OK", id))
+                                : BadRequest(new Response(false, "item NotFound or user already active", "404", "Not Found", id));
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost("students/inactive/{id:int}")]
 
         public async Task<IActionResult> MakeInActive([FromRoute] int id)
         {
-            var isSucces = await _studentService.InActiveAsync(id);
+            try
+            {
+                var isSucces = await _studentService.InActiveAsync(id);
 
-            return isSucces ? Ok(new Response(true, "inactivate succesful", "200", "OK", id))
-                            : BadRequest(new Response(false, "item NotFound or user already inactive", "404", "Not Found", id));
+                return isSucces ? Ok(new Response(true, "inactivate succesful", "200", "OK", id))
+                                : BadRequest(new Response(false, "item NotFound or user already inactive", "404", "Not Found", id));
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
 
