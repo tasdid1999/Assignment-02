@@ -69,6 +69,7 @@ namespace SMS.Infrastructure.Repository.GenericRepository
 
         public virtual Task UpdateAsync(T entity)
         {
+           
             _dbset.Update(entity);
 
              return Task.CompletedTask;

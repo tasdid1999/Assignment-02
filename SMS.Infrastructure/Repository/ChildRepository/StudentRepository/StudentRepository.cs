@@ -17,15 +17,13 @@ namespace SMS.Infrastructure.Repository.ChildRepository.StudentRepository
     public class StudentRepository : GenericRepository<Student>, IStudentRepository
     {
         private readonly Context _dbContext;
-        private readonly IConfiguration _configuration;
+       
 
-        public StudentRepository(Context dbContext, IConfiguration configuration) : base(dbContext)
+        public StudentRepository(Context dbContext) : base(dbContext)
         {
             _dbContext = dbContext;
-            _configuration = configuration;
+           
         }
-
-        
 
         public async override Task<bool> DeleteAsync(int id)
        {
@@ -76,7 +74,7 @@ namespace SMS.Infrastructure.Repository.ChildRepository.StudentRepository
                     return false;
                 }
 
-                student.Id = 1;
+                student.StatusId= 1;
                 return true;
             }
 
@@ -93,7 +91,7 @@ namespace SMS.Infrastructure.Repository.ChildRepository.StudentRepository
                     return false;
                 }
 
-                student.Id = 0;
+                student.StatusId = 0;
                 return true;
             }
 

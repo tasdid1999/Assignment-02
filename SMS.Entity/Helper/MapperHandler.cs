@@ -2,9 +2,11 @@
 using SMS.ClientEntity.Request.Course;
 using SMS.ClientEntity.Request.Student;
 using SMS.ClientEntity.Request.Teacher;
+using SMS.ClientEntity.Request.teacherCourse;
 using SMS.ClientEntity.Response.Course;
 using SMS.ClientEntity.Response.Student;
 using SMS.ClientEntity.Response.Teacher;
+using SMS.ClientEntity.Response.teacherCourse;
 using SMS.Entity.Domain;
 using System;
 using System.Collections.Generic;
@@ -25,6 +27,8 @@ namespace SMS.Entity.Helper
             CreateMap<Teacher, TeacherResponse>();
             CreateMap<CourseRequest,Course>();
             CreateMap<Course, CourseResponse>();
+            CreateMap<TeacherCourseRequest, TeacherCourse>();
+            CreateMap<TeacherCourse, TeacherCourseResponse>();
         }
     }
 }

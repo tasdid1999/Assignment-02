@@ -1,4 +1,5 @@
 using AutoMapper;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using SMS.Entity.Helper;
 using SMS.Infrastructure.Data;
@@ -11,6 +12,8 @@ using SMS.Service.course;
 using SMS.Service.student;
 using SMS.Service.teacher;
 using SMS.Service.teacherCourse;
+using System.Reflection;
+using System.Reflection.Metadata;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,6 +42,8 @@ builder.Services.AddScoped<ITeacherCourseService, TeacherCourseService>();
 var automapper = new MapperConfiguration(item => item.AddProfile(new MapperHandler()));
 IMapper mapper = automapper.CreateMapper();
 builder.Services.AddSingleton(mapper);
+
+builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
 var app = builder.Build();
 

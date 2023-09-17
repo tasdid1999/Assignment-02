@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 using SMS.Service.teacher;
 using SMS.ClientEntity.Response.Teacher;
 using SMS.ClientEntity.Request.Teacher;
+using FluentValidation;
+using SMS.ClientEntity.Request.Student;
 
 namespace SMS.API.Controllers
 {
@@ -18,12 +20,14 @@ namespace SMS.API.Controllers
     public class TeacherController : ControllerBase
     {
         private readonly ITeacherService _teacherService;
+        private readonly IValidator<TeacherRequest> _validator;
         private readonly IMapper _mapper;
 
-        public TeacherController(IMapper mapper, ITeacherService teacherService)
+        public TeacherController(IMapper mapper, ITeacherService teacherService, IValidator<TeacherRequest> validator)
         {
             _mapper = mapper;
             _teacherService = teacherService;
+            _validator = validator;
         }
 
         [HttpGet("teachers")]
@@ -63,6 +67,13 @@ namespace SMS.API.Controllers
         {
             try
             {
+                var validationResult = await _validator.ValidateAsync(teacherRequest);
+
+                if (!validationResult.IsValid)
+                {
+                    return BadRequest(new Response(false, "something wrong in requested object", "400", "BadRequest", validationResult.Errors));
+                }
+
 
                 var teacher = _mapper.Map<Teacher>(teacherRequest);
 
@@ -82,6 +93,13 @@ namespace SMS.API.Controllers
         {
             try
             {
+                var validationResult = await _validator.ValidateAsync(teacherRequest);
+
+                if (!validationResult.IsValid)
+                {
+                    return BadRequest(new Response(false, "something wrong in requested object", "400", "BadRequest", validationResult.Errors));
+                }
+
                 var teacher = _mapper.Map<Teacher>(teacherRequest);
 
                 var isUpdate = await _teacherService.UpdateTeacherAsync(teacher);

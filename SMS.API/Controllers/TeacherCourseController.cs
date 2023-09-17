@@ -9,6 +9,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using SMS.Service.teacher;
 using SMS.Service.teacherCourse;
+using SMS.ClientEntity.Request.teacherCourse;
+using SMS.ClientEntity.Response.teacherCourse;
 
 namespace SMS.API.Controllers
 {
@@ -32,7 +34,7 @@ namespace SMS.API.Controllers
             {
                 var listOfTeacherCourses = await _teacherCourseService.GetAllTeacherCoursesAsync(page, pageSize);
 
-                return listOfTeacherCourses is not null ? Ok(new Response(true, "Data consumed successfully", "200", "OK", listOfTeacherCourses))
+                return listOfTeacherCourses is not null ? Ok(new Response(true, "Data consumed successfully", "200", "OK", _mapper.Map<List<TeacherCourseResponse>>(listOfTeacherCourses)))
                                                         : NotFound(new Response(true, "There is no data", "200", "OK", new List<TeacherCourse>()));
             }
             catch (Exception ex)
@@ -48,7 +50,7 @@ namespace SMS.API.Controllers
             {
                 var teacherCourse = await _teacherCourseService.GetTeacherCourseByIdAsync(id);
 
-                return teacherCourse is not null ? Ok(new Response(true, "Data consumed successfully", "200", "OK", teacherCourse))
+                return teacherCourse is not null ? Ok(new Response(true, "Data consumed successfully", "200", "OK", _mapper.Map<TeacherCourseResponse>(teacherCourse)))
                                                  : NotFound(new Response(false, "Item Not Found in Database", "404", "Not Found", null));
             }
             catch (Exception ex)
@@ -58,11 +60,13 @@ namespace SMS.API.Controllers
         }
 
         [HttpPost("teachercourses")]
-        public async Task<IActionResult> AddTeacherCourse([FromBody] TeacherCourse teacherCourseRequest)
+        public async Task<IActionResult> AddTeacherCourse([FromBody] TeacherCourseRequest teacherCourseRequest)
         {
             try
             {
-                var isInserted = await _teacherCourseService.AddTeacherCourseAsync(teacherCourseRequest);
+                var teacherCourse = _mapper.Map<TeacherCourse>(teacherCourseRequest);
+
+                var isInserted = await _teacherCourseService.AddTeacherCourseAsync(teacherCourse);
 
                 return isInserted ? Ok(new Response(true, "Insert Item Successful", "200", "OK", teacherCourseRequest))
                                   : BadRequest(new Response(false, "Something wrong with the requested object", "400", "BadRequest", teacherCourseRequest));

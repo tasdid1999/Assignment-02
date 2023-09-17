@@ -41,6 +41,8 @@ namespace SMS.Infrastructure.Repository.ChildRepository.CourseRepository
             {
                 course.CourseCode = courseRequest.CourseCode;
                 course.CourseName = courseRequest.CourseName;
+                course.UpdatedAt = DateTime.Now;
+                course.UpdatedBy = 1;
                 
                 return true;
             }

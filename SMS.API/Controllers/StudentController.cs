@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using SMS.API.Validator;
 using SMS.ClientEntity.Request.Student;
 using SMS.ClientEntity.Response;
 using SMS.ClientEntity.Response.Student;
@@ -17,12 +19,14 @@ namespace SMS.API.Controllers
     {
         private readonly IStudentService _studentService;
         private readonly IMapper _mapper;
+        private readonly IValidator<StudentRequest> _validator;
 
-        public StudentController(IMapper mapper, IStudentService studentService)
+        public StudentController(IMapper mapper, IStudentService studentService, IValidator<StudentRequest> validator)
         {
 
             _mapper = mapper;
             _studentService = studentService;
+            _validator = validator;
         }
 
         [HttpGet("students")]
@@ -66,6 +70,14 @@ namespace SMS.API.Controllers
         {
             try
             {
+
+                var validationResult = await _validator.ValidateAsync(studentRequest);
+
+                if (!validationResult.IsValid)
+                {
+                    return BadRequest(new Response(false, "something wrong in requested object", "400", "BadRequest", validationResult.Errors));
+                }
+
                 var student = _mapper.Map<Student>(studentRequest);
                
                 var isInserted = await _studentService.AddStudentAsync(student);
@@ -79,10 +91,18 @@ namespace SMS.API.Controllers
             }
         }
         [HttpPut("students")]
-        public async Task<IActionResult> UpdateStudent(StudentRequest studentRequest)
+        public async Task<IActionResult> UpdateStudent([FromBody]StudentRequest studentRequest)
         {
             try
             {
+
+                var validationResult = await _validator.ValidateAsync(studentRequest);
+
+                if (!validationResult.IsValid)
+                {
+                    return BadRequest(new Response(false, "something wrong in requested object", "400", "BadRequest", validationResult.Errors));
+                }
+
                 var student = _mapper.Map<Student>(studentRequest);
 
                 var isUpdate = await _studentService.UpdateStudentAsync(student);

@@ -11,6 +11,7 @@ using SMS.Service.course;
 using SMS.ClientEntity.Request.Course;
 using SMS.ClientEntity.Request.Student;
 using SMS.ClientEntity.Response.Course;
+using FluentValidation;
 
 namespace SMS.API.Controllers
 {
@@ -19,12 +20,14 @@ namespace SMS.API.Controllers
     public class CourseController : ControllerBase
     {
         private readonly ICourseService _courseService;
+        private readonly IValidator<CourseRequest> _validator;
         private readonly IMapper _mapper;
 
-        public CourseController(IMapper mapper, ICourseService courseService)
+        public CourseController(IMapper mapper, ICourseService courseService, IValidator<CourseRequest> validator)
         {
             _mapper = mapper;
             _courseService = courseService;
+            _validator = validator;
         }
 
         [HttpGet("courses")]
@@ -64,6 +67,12 @@ namespace SMS.API.Controllers
         {
             try
             {
+                var validationResult = await _validator.ValidateAsync(courseRequest);
+
+                if (!validationResult.IsValid)
+                {
+                    return BadRequest(new Response(false, "something wrong in requested object", "400", "BadRequest", validationResult.Errors));
+                }
 
                 var course = _mapper.Map<Course>(courseRequest);
                 var isInserted = await _courseService.AddCourseAsync(course);
@@ -78,13 +87,19 @@ namespace SMS.API.Controllers
         }
 
         [HttpPut("courses")]
-        public async Task<IActionResult> UpdateCourse(Course courseRequest)
+        public async Task<IActionResult> UpdateCourse(CourseRequest courseRequest)
         {
             try
             {
-               
+                var validationResult = await _validator.ValidateAsync(courseRequest);
 
-                var isUpdate = await _courseService.UpdateCourseAsync(courseRequest);
+                if (!validationResult.IsValid)
+                {
+                    return BadRequest(new Response(false, "something wrong in requested object", "400", "BadRequest", validationResult.Errors));
+                }
+                var course = _mapper.Map<Course>(courseRequest);
+
+                var isUpdate = await _courseService.UpdateCourseAsync(course);
 
                 return isUpdate ? Ok(new Response(true, "Update item Successful", "200", "OK", courseRequest))
                                 : BadRequest(new Response(false, "Item Not Found", "200", "OK", courseRequest));

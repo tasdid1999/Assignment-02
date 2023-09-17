@@ -48,9 +48,10 @@ namespace SMS.Service.student
 
         public async Task<bool> UpdateStudentAsync(Student student)
         {
-             await _unitOfWork.studentRepository.UpdateAsync(student);
 
-            return await _unitOfWork.SaveChangesAsync();
+                await _unitOfWork.studentRepository.UpdateAsync(student);
+
+                return await _unitOfWork.SaveChangesAsync();
           
         }
         public async Task<bool> DeleteStudentAsync(int id)
